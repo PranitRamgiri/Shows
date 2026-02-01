@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/shows")
@@ -23,5 +20,11 @@ public class ShowController {
     public ResponseEntity<ShowResponse> createShow(@Valid @RequestBody CreateShowRequest createShowRequest) {
         ShowResponse showResponse = showService.createShow(createShowRequest);
         return new ResponseEntity<>(showResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{showId}")
+    public ResponseEntity<ShowResponse> getShowById(@PathVariable Long showId) {
+        ShowResponse showResponse = showService.getShowById(showId);
+        return new ResponseEntity<>(showResponse, HttpStatus.OK);
     }
 }

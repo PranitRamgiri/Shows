@@ -11,4 +11,6 @@ public interface ShowService {
     ShowResponse createShow(CreateShowRequest createShowRequest);
 
     List<Show> getShowsByMovieAndCity(String title, String city);
+
+    ShowResponse getShowById(Long showId);
 }
