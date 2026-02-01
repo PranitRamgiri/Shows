@@ -5,14 +5,17 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "show")
+@Table(name = "shows")
 public class Show {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long showId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
+    private Long movieId;
+
+    @Column(nullable = false)
     private String movieTitle;
 
     @Column(nullable = false)
@@ -22,10 +25,10 @@ public class Show {
     private String city;
 
     @Column(nullable = false)
-    private Long totalSeats;
+    private int totalSeats;
 
     @Column(nullable = false)
-    private Long availableSeats;
+    private int availableSeats;
 
     public Long getShowId() {
         return showId;
@@ -33,6 +36,14 @@ public class Show {
 
     public void setShowId(Long showId) {
         this.showId = showId;
+    }
+
+    public Long getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
     }
 
     public String getMovieTitle() {
@@ -47,6 +58,10 @@ public class Show {
         return showTime;
     }
 
+    public void setShowTime(LocalDateTime showTime) {
+        this.showTime = showTime;
+    }
+
     public String getCity() {
         return city;
     }
@@ -55,23 +70,19 @@ public class Show {
         this.city = city;
     }
 
-    public void setShowTime(LocalDateTime showTime) {
-        this.showTime = showTime;
-    }
-
-    public Long getTotalSeats() {
+    public int getTotalSeats() {
         return totalSeats;
     }
 
-    public void setTotalSeats(Long totalSeats) {
+    public void setTotalSeats(int totalSeats) {
         this.totalSeats = totalSeats;
     }
 
-    public Long getAvailableSeats() {
+    public int getAvailableSeats() {
         return availableSeats;
     }
 
-    public void setAvailableSeats(Long availableSeats) {
+    public void setAvailableSeats(int availableSeats) {
         this.availableSeats = availableSeats;
     }
 }

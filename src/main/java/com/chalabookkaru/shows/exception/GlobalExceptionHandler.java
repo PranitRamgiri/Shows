@@ -9,25 +9,43 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ShowException.class)
-    public ResponseEntity<ErrorResponse> handleShowErrors(ShowException e) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(LocalDateTime.now());
-        errorResponse.setStatus(e.getHttpStatus().value());
-        errorResponse.setMessage(e.getMessage());
+    public ResponseEntity<ErrorResponse> handleShowException(ShowException ex) {
+        return buildErrorResponse(ex.getMessage(), ex.getHttpStatus());
+    }
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(MovieNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleMovieNotFoundException(MovieNotFoundException ex) {
+        return buildErrorResponse(ex.getMessage(), ex.getHttpStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>> handleValidationErrors(MethodArgumentNotValidException e) {
-        List<String> messages = e.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage).toList();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messages);
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+        return buildErrorResponse(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        return buildErrorResponse(
+                "Internal Server Error in ShowMS",
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status) {
+        return new ResponseEntity<>(
+                new ErrorResponse(LocalDateTime.now(), status.value(), message),
+                status
+        );
     }
 }
